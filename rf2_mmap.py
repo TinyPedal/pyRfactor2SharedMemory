@@ -3,8 +3,8 @@ rF2 Memory Map Control
 
 Inherit Python mapping of The Iron Wolf's rF2 Shared Memory Tools
 
-Memory map control (by S.Victor)
-Cross-platform Linux support (by Bernat)
+Memory map control (author: Xiang)
+Cross-platform Linux support (author: Bernat)
 """
 
 from __future__ import annotations
@@ -15,11 +15,11 @@ import mmap
 import platform
 
 try:
-    from . import rF2data
-    from .rF2data import rFactor2Constants
+    from . import rf2_data
+    from .rf2_data import rFactor2Constants
 except ImportError:  # standalone, not package
-    import rF2data
-    from rF2data import rFactor2Constants
+    import rf2_data
+    from rf2_data import rFactor2Constants
 
 PLATFORM = platform.system()
 MAX_VEHICLES = rFactor2Constants.MAX_MAPPED_VEHICLES
@@ -61,13 +61,13 @@ class MMapControl:
     """Memory map control"""
 
     __slots__ = (
-        "_mmap_name",
-        "_mmap_buffer",
-        "_struct",
         "_buffer",
+        "_mmap_buffer",
+        "_mmap_name",
+        "_struct",
         "_version",
-        "update",
         "data",
+        "update",
     )
 
     def __init__(self, mmap_name: str, data_struct: ctypes.Structure) -> None:
@@ -77,10 +77,10 @@ class MMapControl:
             mmap_name: mmap filename, ex. $rFactor2SMMP_Scoring$.
             data_struct: ctypes data structure, ex. rF2data.rF2Scoring.
         """
-        self._mmap_name = mmap_name
-        self._mmap_buffer = None
-        self._struct = data_struct
         self._buffer = bytearray()
+        self._mmap_buffer = None
+        self._mmap_name = mmap_name
+        self._struct = data_struct
         self._version = None
         self.update = None
         self.data = None
@@ -107,7 +107,7 @@ class MMapControl:
         else:
             self._buffer[:] = self._mmap_buffer
             self.data = self._struct.from_buffer(self._buffer)
-            self._version = rF2data.rF2MappedBufferVersionBlock.from_buffer(self._mmap_buffer)
+            self._version = rf2_data.rF2MappedBufferVersionBlock.from_buffer(self._mmap_buffer)
             self.update = self.__buffer_copy
 
         mode = "Direct" if access_mode else "Copy"
@@ -147,11 +147,11 @@ def test_api():
     # Test run
     SEPARATOR = "=" * 50
     print("Test API - Start")
-    scoring = MMapControl(rFactor2Constants.MM_SCORING_FILE_NAME, rF2data.rF2Scoring)
+    scoring = MMapControl(rFactor2Constants.MM_SCORING_FILE_NAME, rf2_data.rF2Scoring)
     scoring.create(1)
-    telemetry = MMapControl(rFactor2Constants.MM_TELEMETRY_FILE_NAME, rF2data.rF2Telemetry)
+    telemetry = MMapControl(rFactor2Constants.MM_TELEMETRY_FILE_NAME, rf2_data.rF2Telemetry)
     telemetry.create(1)
-    extended = MMapControl(rFactor2Constants.MM_EXTENDED_FILE_NAME, rF2data.rF2Extended)
+    extended = MMapControl(rFactor2Constants.MM_EXTENDED_FILE_NAME, rf2_data.rF2Extended)
     extended.create(1)
 
     print(SEPARATOR)

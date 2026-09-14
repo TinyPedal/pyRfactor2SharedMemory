@@ -1,15 +1,16 @@
 """
-Python mapping of The Iron Wolf's rF2 Shared Memory Tools
-Auto-generated from rF2data.cs
+Python mapping of The Iron Wolf's rF2 Shared Memory Tools for rFactor 2
+
+Translated from rF2data.cs, InternalsPlugin.hpp
 """
-# pylint: disable=C,R,W
 
 import ctypes
 import mmap
-from enum import Enum, Flag
 
 
 class rFactor2Constants:
+    """rFactor 2 constants"""
+
     MM_TELEMETRY_FILE_NAME: str = "$rFactor2SMMP_Telemetry$"
     MM_SCORING_FILE_NAME: str = "$rFactor2SMMP_Scoring$"
     MM_RULES_FILE_NAME: str = "$rFactor2SMMP_Rules$"
@@ -42,298 +43,8 @@ class rFactor2Constants:
     RFACTOR2_DEDICATED_PROCESS_NAME: str = "rFactor2 Dedicated"
 
 
-"""
-# untranslated /*
-rF2 internal state mapping structures.  Allows access to native C++ structs from C
-# untranslated Must be kept in sync with Include\rF2State.h.
-# untranslated See: MainForm.MainUpdate for sample on how to marshall from native in memory struct.
-# untranslated Author: The Iron Wolf (vleonavicius@hotmail.com)
-# untranslated Website: thecrewchief.org
-# untranslated */
-# untranslated using Newtonsoft.Json;
-# untranslated using System;
-# untranslated using System.Runtime.InteropServices;
-# untranslated using System.Xml.Serialization;
-# untranslated namespace rF2SharedMemory
-class rFactor2Constants
-    const byte RowX = 0;
-    const byte RowY = 1;
-    const byte RowZ = 2;
-"""
+# rF2data
 
-
-class SubscribedBuffer(Flag):
-    """Subscribed buffer flag"""
-
-    Telemetry = 1
-    Scoring = 2
-    Rules = 4
-    MultiRules = 8
-    ForceFeedback = 16
-    Graphics = 32
-    PitInfo = 64
-    Weather = 128
-    All = 255
-
-
-class rF2GamePhase(Enum):
-    """
-    Game phase states
-
-    0=Before session has begun,
-    1=Reconnaissance laps (race only),
-    2=Grid walk-through (race only),
-    3=Formation lap (race only),
-    4=Starting-light countdown has begun (race only),
-    5=Green flag,
-    6=Full course yellow / safety car,
-    7=Session stopped,
-    8=Session over,
-    9=Paused (tag.2015.09.14 - this is new, and indicates that this is a heartbeat call to the plugin)
-    """
-
-    Garage = 0
-    WarmUp = 1
-    GridWalk = 2
-    Formation = 3
-    Countdown = 4
-    GreenFlag = 5
-    FullCourseYellow = 6
-    SessionStopped = 7
-    SessionOver = 8
-    PausedOrHeartbeat = 9
-
-
-class rF2YellowFlagState(Enum):
-    """
-    Yellow flag states (applies to full-course only)
-
-    -1=Invalid,
-    0=None,
-    1=Pending,
-    2=Pits closed,
-    3=Pit lead lap,
-    4=Pits open,
-    5=Last lap,
-    6=Resume,
-    7=Race halt (not currently used),
-    """
-
-    Invalid = -1
-    NoFlag = 0
-    Pending = 1
-    PitClosed = 2
-    PitLeadLap = 3
-    PitOpen = 4
-    LastLap = 5
-    Resume = 6
-    RaceHalt = 7
-
-
-class rF2SurfaceType(Enum):
-    """
-    Surface type
-
-    0=dry,
-    1=wet,
-    2=grass,
-    3=dirt,
-    4=gravel,
-    5=rumblestrip,
-    6=special
-    """
-
-    Dry = 0
-    Wet = 1
-    Grass = 2
-    Dirt = 3
-    Gravel = 4
-    Kerb = 5
-    Special = 6
-
-
-class rF2Sector(Enum):
-    """
-    Sector index
-
-    0=sector3,
-    1=sector1,
-    2=sector2 (don't ask why)
-    """
-
-    Sector3 = 0
-    Sector1 = 1
-    Sector2 = 2
-
-
-class rF2FinishStatus(Enum):
-    """Finish status
-
-    0=none,
-    1=finished,
-    2=dnf,
-    3=dq
-    """
-
-    _None = 0
-    Finished = 1
-    Dnf = 2
-    Dq = 3
-
-
-class rF2Control(Enum):
-    """
-    Who's in control
-
-    -1=nobody (shouldn't get this),
-    0=local player,
-    1=local AI,
-    2=remote,
-    3=replay (shouldn't get this)
-    """
-
-    Nobody = -1
-    Player = 0
-    AI = 1
-    Remote = 2
-    Replay = 3
-
-
-class rF2WheelIndex(Enum):
-    """Wheel index
-
-    front left=0,
-    front right=1,
-    rear left=2,
-    rear right=3
-    """
-
-    FrontLeft = 0
-    FrontRight = 1
-    RearLeft = 2
-    RearRight = 3
-
-
-class rF2PitState(Enum):
-    """Pit state
-
-    0=none,
-    1=request,
-    2=entering,
-    3=stopped,
-    4=exiting
-    """
-
-    _None = 0
-    Request = 1
-    Entering = 2
-    Stopped = 3
-    Exiting = 4
-
-
-class rF2PrimaryFlag(Enum):
-    """
-    Primary flag being shown to vehicle
-
-    0=green,
-    6=blue
-    """
-
-    Green = 0
-    Blue = 6
-
-
-class rF2CountLapFlag(Enum):
-    """Count lap flag
-
-    0=do not count lap or time,
-    1=count lap but not time,
-    2=count lap and time
-    """
-
-    DoNotCountLap = 0
-    CountLapButNotTime = 1
-    CountLapAndTime = 2
-
-
-class rF2RearFlapLegalStatus(Enum):
-    """
-    Rear flap (DRS) status
-
-    0=disallowed,
-    1=criteria detected but not allowed quite yet,
-    2=allowed
-    """
-
-    Disallowed = 0
-    DetectedButNotAllowedYet = 1
-    Alllowed = 2
-
-
-class rF2IgnitionStarterStatus(Enum):
-    """
-    Ignition starter status
-
-    0=off,
-    1=ignition,
-    2=ignition+starter
-    """
-
-    Off = 0
-    Ignition = 1
-    IgnitionAndStarter = 2
-
-
-class rF2SafetyCarInstruction(Enum):
-    """Safety car instruction
-
-    0=no change,
-    1=go active,
-    2=head for pits
-    """
-
-    NoChange = 0
-    GoActive = 1
-    HeadForPits = 2
-
-
-class rF2TrackRulesCommand(Enum):
-    AddFromTrack = 0
-    AddFromPit = 1        # exited pit during full-course yellow
-    AddFromUndq = 2       # during a full-course yellow, the admin reversed a disqualification
-    RemoveToPit = 3       # entered pit during full-course yellow
-    RemoveToDnf = 4       # vehicle DNF'd during full-course yellow
-    RemoveToDq = 5        # vehicle DQ'd during full-course yellow
-    RemoveToUnloaded = 6  # vehicle unloaded (possibly kicked out or banned) during full-course yellow
-    MoveToBack = 7        # misbehavior during full-course yellow, resulting in the penalty of being moved to the back of their current line
-    LongestTime = 8       # misbehavior during full-course yellow, resulting in the penalty of being moved to the back of the longest line
-    Maximum = 9           # should be last
-
-
-class rF2TrackRulesColumn(Enum):
-    LeftLane = 0
-    MidLefLane = 1      # mid-left
-    MiddleLane = 2      # middle
-    MidrRghtLane = 3    # mid-right
-    RightLane = 4       # right (outside)
-    MaxLanes = 5        # should be after the valid static lane choices
-    Invalid = MaxLanes
-    FreeChoice = 6      # free choice (dynamically chosen by driver)
-    Pending = 7         # depends on another participant's free choice (dynamically set after another driver chooses)
-    Maximum = 8         # should be last
-
-
-class rF2TrackRulesStage(Enum):
-    FormationInit = 0
-    FormationUpdate = 1  # update of the formation lap
-    Normal = 2           # normal (non-yellow) update
-    CautionInit = 3      # initialization of a full-course yellow
-    CautionUpdate = 4    # update of a full-course yellow
-    Maximum = 5          # should be last
-
-
-# untranslated namespace rFactor2Data
-# untranslated [StructLayout(LayoutKind.Sequential, Pack = 4)]
 class rF2Vec3(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -344,7 +55,6 @@ class rF2Vec3(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2Wheel(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -381,7 +91,6 @@ class rF2Wheel(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2VehicleTelemetry(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -446,7 +155,7 @@ class rF2VehicleTelemetry(ctypes.Structure):
         ("mRearTireCompoundName", ctypes.c_char*18),          # name of rear tire compound
         ("mSpeedLimiterAvailable", ctypes.c_ubyte),           # whether speed limiter is available
         ("mAntiStallActivated", ctypes.c_ubyte),              # whether (hard) anti-stall is activated
-        ("mUnused", ctypes.c_ubyte*2),                        #
+        ("mUnused", ctypes.c_ubyte*2),
         ("mVisualSteeringWheelRange", ctypes.c_float),        # the *visual* steering wheel range
         ("mRearBrakeBias", ctypes.c_double),                  # fraction of brakes on rear
         ("mTurboBoostPressure", ctypes.c_double),             # current turbo boost pressure if available
@@ -464,7 +173,6 @@ class rF2VehicleTelemetry(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2ScoringInfo(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -505,7 +213,6 @@ class rF2ScoringInfo(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2VehicleScoring(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -570,7 +277,6 @@ class rF2VehicleScoring(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2PhysicsOptions(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -597,8 +303,8 @@ class rF2PhysicsOptions(ctypes.Structure):
         ("mAutoReverse", ctypes.c_ubyte),              # 0 (off), 1 (on)
         ("mAlternateNeutral", ctypes.c_ubyte),         # Whether shifting up and down simultaneously equals neutral
         ("mAIControl", ctypes.c_ubyte),                # Whether player vehicle is currently under AI control
-        ("mUnused1", ctypes.c_ubyte),                  #
-        ("mUnused2", ctypes.c_ubyte),                  #
+        ("mUnused1", ctypes.c_ubyte),
+        ("mUnused2", ctypes.c_ubyte),
         ("mManualShiftOverrideTime", ctypes.c_float),  # time before auto-shifting can resume after recent manual shift
         ("mAutoShiftOverrideTime", ctypes.c_float),    # time before manual shifting can resume after recent auto shift
         ("mSpeedSensitiveSteering", ctypes.c_float),   # 0.0 (off) - 1.0
@@ -606,7 +312,6 @@ class rF2PhysicsOptions(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, Pack = 4)]
 class rF2TrackRulesAction(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -617,7 +322,6 @@ class rF2TrackRulesAction(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2TrackRulesParticipant(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -632,14 +336,13 @@ class rF2TrackRulesParticipant(ctypes.Structure):
         ("mPositionAssignment", ctypes.c_int),          # 0-based position within column (line/lane) that participant is supposed to be located at (-1 is invalid)
         ("mPitsOpen", ctypes.c_ubyte),                  # whether the rules allow this particular vehicle to enter pits right now (input is 2=false or 3=true; if you want to edit it, set to 0=false or 1 = true)
         ("mUpToSpeed", ctypes.c_bool),                  # while in the frozen order, this flag indicates whether the vehicle can be followed (this should be false for somebody who has temporarily spun and hasn't gotten back up to speed yet)
-        ("mUnused", ctypes.c_bool*2),                   #
+        ("mUnused", ctypes.c_bool*2),
         ("mGoalRelativeDistance", ctypes.c_double),     # calculated based on where the leader is, and adjusted by the desired column spacing and the column/position assignments
         ("mMessage", ctypes.c_char*96),                 # a message for this participant to explain what is going on it will get run through translator on client machines
         ("mExpansion", ctypes.c_ubyte*192),
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2TrackRules(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -677,7 +380,6 @@ class rF2TrackRules(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2PitMenu(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -691,7 +393,6 @@ class rF2PitMenu(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2WeatherControlInfo(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -709,7 +410,6 @@ class rF2WeatherControlInfo(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2MappedBufferVersionBlock(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -719,7 +419,6 @@ class rF2MappedBufferVersionBlock(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2MappedBufferVersionBlockWithSize(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -730,7 +429,6 @@ class rF2MappedBufferVersionBlockWithSize(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2Telemetry(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -743,7 +441,6 @@ class rF2Telemetry(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2Scoring(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -756,7 +453,6 @@ class rF2Scoring(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2Rules(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -770,7 +466,6 @@ class rF2Rules(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2ForceFeedback(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -781,7 +476,6 @@ class rF2ForceFeedback(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2GraphicsInfo(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -798,7 +492,6 @@ class rF2GraphicsInfo(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2Graphics(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -809,7 +502,6 @@ class rF2Graphics(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2PitInfo(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -820,7 +512,6 @@ class rF2PitInfo(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2Weather(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -832,7 +523,6 @@ class rF2Weather(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, Pack = 4)]
 class rF2TrackedDamage(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -842,7 +532,6 @@ class rF2TrackedDamage(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, Pack = 4)]
 class rF2VehScoringCapture(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -854,7 +543,6 @@ class rF2VehScoringCapture(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, Pack = 4)]
 class rF2SessionTransitionCapture(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -866,7 +554,6 @@ class rF2SessionTransitionCapture(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2Extended(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -908,7 +595,6 @@ class rF2Extended(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2HWControl(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -921,7 +607,6 @@ class rF2HWControl(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2WeatherControl(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -933,7 +618,6 @@ class rF2WeatherControl(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2RulesControl(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -947,7 +631,6 @@ class rF2RulesControl(ctypes.Structure):
     ]
 
 
-# untranslated [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
 class rF2PluginControl(ctypes.Structure):
     __slots__ = ()
     _pack_ = 4
@@ -962,6 +645,8 @@ class rF2PluginControl(ctypes.Structure):
     ]
 
 
+# Memory map
+
 class SimInfo:
     """Simulation info from shared memory"""
 
@@ -971,27 +656,28 @@ class SimInfo:
             length=ctypes.sizeof(rF2Telemetry),
             tagname=rFactor2Constants.MM_TELEMETRY_FILE_NAME,
         )
-        self.Rf2Tele = rF2Telemetry.from_buffer(self._rf2_tele)
+        self.RF2Tele = rF2Telemetry.from_buffer(self._rf2_tele)
 
         self._rf2_scor = mmap.mmap(
             fileno=0,
             length=ctypes.sizeof(rF2Scoring),
             tagname=rFactor2Constants.MM_SCORING_FILE_NAME,
         )
-        self.Rf2Scor = rF2Scoring.from_buffer(self._rf2_scor)
+        self.RF2Scor = rF2Scoring.from_buffer(self._rf2_scor)
 
         self._rf2_ext = mmap.mmap(
             fileno=0,
             length=ctypes.sizeof(rF2Extended),
             tagname=rFactor2Constants.MM_EXTENDED_FILE_NAME,
         )
-        self.Rf2Ext = rF2Extended.from_buffer(self._rf2_ext)
+        self.RF2Ext = rF2Extended.from_buffer(self._rf2_ext)
 
     def close(self):
         """Close memory map"""
-        self.Rf2Tele = None
-        self.Rf2Scor = None
-        self.Rf2Ext = None
+        self.RF2Tele = None
+        self.RF2Scor = None
+        self.RF2Ext = None
+
         try:  # this did not help with the errors
             self._rf2_tele.close()
             self._rf2_scor.close()
@@ -1001,54 +687,3 @@ class SimInfo:
 
     def __del__(self):
         self.close()
-
-
-def test():
-    """Example usage"""
-    info = SimInfo()
-
-    scor_data = info.Rf2Scor
-    tele_data = info.Rf2Tele
-    ext_data = info.Rf2Ext
-
-    selected_player_index = 0
-
-    player_scor_data = scor_data.mVehicles[selected_player_index]
-    player_tele_data = tele_data.mVehicles[selected_player_index]
-
-    print("-"*40)
-    print("Plugin info:")
-    print("Version:", bytes(ext_data.mVersion).decode().rstrip())
-    print("Unsubscribed buffers:", SubscribedBuffer(ext_data.mUnsubscribedBuffersMask))
-
-    print("-"*40)
-    print("Scoring info:")
-    print("Track name:", scor_data.mScoringInfo.mTrackName)
-    print("Local player name:", scor_data.mScoringInfo.mPlayerName)
-    print("Setting name:", scor_data.mScoringInfo.mPlrFileName)
-    print("Total vehicles:", scor_data.mScoringInfo.mNumVehicles)
-
-    print("-"*40)
-    print("Selected Player scoring info:")
-    print("Slot ID:", player_scor_data.mID)
-    print("Driver name:", player_scor_data.mDriverName)
-    print("VEH file:", player_scor_data.mVehFilename)
-    print("Is local player:", player_scor_data.mIsPlayer)
-
-    print("-"*40)
-    print("Selected player telemetry info:")
-    print("Slot ID:", player_tele_data.mID)
-    print("Gear:", player_tele_data.mGear)
-    print("Throttle:", player_tele_data.mUnfilteredThrottle)
-    print("Brake:", player_tele_data.mUnfilteredBrake)
-    print("Clutch:", player_tele_data.mUnfilteredClutch)
-
-    player_scor_data = None
-    player_tele_data = None
-    scor_data = None
-    tele_data = None
-    ext_data = None
-
-
-if __name__ == "__main__":
-    test()
